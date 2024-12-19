@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { defaultErrorMessage } from "../constants";
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 
 interface ICreateUserPayload {
@@ -60,3 +60,75 @@ export const getAllUsers = async (req : Request, res : Response) => {
 };
 
 
+
+export const getOneUser = async (req : Request, res : Response) => {
+    try {
+        const { userId } = req.params
+
+        const user = await prisma.users.findFirst({
+            where: {
+                id: +userId
+            }
+        });
+
+        if(!user) {
+            res.status(404).json({
+                isSuccess: false,
+                message: "User not found!"
+            });
+            return
+        }
+
+        res.status(200).json({
+            isSuccess: true,
+            user
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            isSucces: false,
+            message: defaultErrorMessage
+        });
+    }
+}
+
+
+export const deleteUser = async (req : Request, res : Response) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await prisma.users.findFirst({
+            where: {
+                id: +userId
+            }
+        });
+
+        if(!user) {
+            res.status(404).json({
+                isSucces: false,
+                message: "User not found!"
+            });
+
+            return;
+        }
+
+        //delete user
+
+        await prisma.users.delete({
+            where: {
+                id: user?.id
+            }
+        })
+
+        res.status(200).json({
+            isSuccess: true,
+            message: "User deleted successfully"
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            isSucces: false,
+            message: defaultErrorMessage
+        });   
+    }
+}
