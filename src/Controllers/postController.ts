@@ -13,11 +13,11 @@ interface ICreatepost {
 
 export const createPost = async ( req : Request, res : Response) => {
     try {
-        const { title, content, user_id } = req.body;
+        const { title, content, user_id } = req.body as ICreatepost;
 
         if(!title || !content || !user_id) {
             res.status(400).json({
-                isuccess: false,
+                isSuccess: false,
                 message: "Validation error!"
             });
             return;

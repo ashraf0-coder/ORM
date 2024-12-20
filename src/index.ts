@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import userRoute from './Routes/userRoute';
-import postRoute from './Routes/userRoute';
+import postRoute from './Routes/postRoute';
 
 dotenv.config();
 

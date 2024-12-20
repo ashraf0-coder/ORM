@@ -28,7 +28,6 @@ export const createUser = async (req : Request, res : Response) => {
             isSuccess: false,
             Message: "Validation error!"
         });
-
         return;
     }
 
