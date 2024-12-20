@@ -9,6 +9,8 @@ interface ICreatepost {
     user_id : number;
 }
 
+        // CREATE A POST
+
 export const createPost = async( req : Request, res : Response) => {
     try {
         const { title, content, user_id } = req.body;
@@ -55,9 +57,14 @@ export const createPost = async( req : Request, res : Response) => {
     }
 };
 
-
+        // GET ALL POSTS
+        
 export const getAllPosts = async (req : Request, res : Response) => {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+        include : {
+            user: true
+        }
+    });
     res.status(200).json({
         isSuccess: true,
         posts

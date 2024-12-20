@@ -16,6 +16,9 @@ interface IUpdateUser {
     password: string,
     userId : number
 }
+
+        //CREATE A USER
+
 export const createUser = async (req : Request, res : Response) => {
     try {
         const { username, password, phone_number} = req.body as ICreateUserPayload;
@@ -50,6 +53,8 @@ export const createUser = async (req : Request, res : Response) => {
     }
 };
 
+        // GET ALL USERS
+
 export const getAllUsers = async (req : Request, res : Response) => {
     try {
         const users = await prisma.users.findMany();
@@ -66,7 +71,7 @@ export const getAllUsers = async (req : Request, res : Response) => {
     }
 };
 
-
+            //GET ONE USER
 
 export const getOneUser = async (req : Request, res : Response) => {
     try {
@@ -104,6 +109,8 @@ export const getOneUser = async (req : Request, res : Response) => {
 }
 
 
+            // DELETE A USER
+
 export const deleteUser = async (req : Request, res : Response) => {
     try {
         const { userId } = req.params;
@@ -122,8 +129,6 @@ export const deleteUser = async (req : Request, res : Response) => {
 
             return;
         }
-
-        //delete user
 
         await prisma.users.delete({
             where: {
@@ -144,7 +149,7 @@ export const deleteUser = async (req : Request, res : Response) => {
     }
 }
 
-
+            // UPDATE A USER
 
 export const updateUser = async (req : Request, res : Response) => {
     try {
