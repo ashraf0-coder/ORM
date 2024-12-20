@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import { Request, Response } from "express";
 import { defaultErrorMessage } from "../constants";
 
 interface ICreatepost {
@@ -11,38 +11,38 @@ interface ICreatepost {
 
         // CREATE A POST
 
-export const createPost = async( req : Request, res : Response) => {
+export const createPost = async ( req : Request, res : Response) => {
     try {
         const { title, content, user_id } = req.body;
 
         if(!title || !content || !user_id) {
             res.status(400).json({
-                isSuccess : false,
-                message: "validation error!"
+                isuccess: false,
+                message: "Validation error!"
             });
             return;
         }
 
         const user = await prisma.users.findFirst({
-            where: {
-                id: user_id
+            where : {
+                id : user_id
             }
-        });
-
-        if(!user){
+        })
+        if(!user) {
             res.status(404).json({
                 isSuccess: false,
                 message: "User not found!"
             });
+            return;
         };
 
         const newPost = await prisma.post.create({
-            data:{
+            data: {
                 title,
                 content,
                 user_id
             }
-        });
+        })
 
         res.status(201).json({
             isSuccess: true,
@@ -53,9 +53,10 @@ export const createPost = async( req : Request, res : Response) => {
         res.status(500).json({
             isSuccess: false,
             message: defaultErrorMessage
-        });
+        })
     }
-};
+}
+
 
         // GET ALL POSTS
         
