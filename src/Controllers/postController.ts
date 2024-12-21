@@ -9,7 +9,13 @@ interface ICreatepost {
     user_id : number;
 }
 
-        // CREATE A POST
+interface IUpdatePost {
+    post_id : string;
+    content : string;
+    title : string;
+}
+
+        // create a post
 
 export const createPost = async ( req : Request, res : Response) => {
     try {
@@ -26,7 +32,8 @@ export const createPost = async ( req : Request, res : Response) => {
         const user = await prisma.users.findFirst({
             where : {
                 id : user_id
-            }
+            },
+
         })
         if(!user) {
             res.status(404).json({
@@ -58,7 +65,7 @@ export const createPost = async ( req : Request, res : Response) => {
 }
 
 
-        // GET ALL POSTS
+        // get all posts
         
 export const getAllPosts = async (req : Request, res : Response) => {
     const posts = await prisma.post.findMany({
@@ -71,3 +78,126 @@ export const getAllPosts = async (req : Request, res : Response) => {
         posts
     });
 };
+
+
+        //get single post
+
+ export const getSinglePost = async (req: Request, res: Response) => {
+    try {
+        const postId = req.params.id
+        const post = await prisma.post.findFirst({
+            where : {
+                id: postId
+            },
+            include: {
+                comment: true
+            }
+        })
+        if(!post) {
+            res.status(404).json({
+                isSuccess: false,
+                message: "Post is not found!"
+            })
+            return
+        }
+
+        res.status(200).json({
+            isSuccess: true,
+            post
+        })
+    } catch (error) {
+        console.log("error: " +error)
+        res.status(500).json({
+            isSuccess: false,
+            message: "Server error!"
+        })
+        return
+    }
+    return
+ }
+
+ export const deletePost = async (req : Request, res : Response) => {
+    try {
+        const postId = req.params.id
+        const post = await prisma.post.findFirst({
+            where: {
+                id: postId
+            }
+        })
+
+        if(!post) {
+            res.status(404).json({
+                isSuccess: false,
+                message: "The post is not found!"
+            })
+            return
+        }
+
+        const deletePost = await prisma.post.delete({
+            where: {
+                id: post.id
+            }
+        })
+
+        res.status(200).json({
+            isSuccess: true,
+            post: deletePost
+        })
+        return
+
+    } catch (error) {
+        console.log("error: " + error)
+        res.status(500).json({
+            isSuccess : false,
+            message: "Server error!"
+        })
+        return
+    }
+ }
+
+        // update a post
+
+ export const updatePost = async (req: Request, res: Response) => {
+    try {
+        const { title, content, post_id } = req.body as IUpdatePost
+
+        const post = await prisma.post.findFirst({
+            where: {
+                id: post_id
+            }
+        })
+
+        if (!post) {
+            res.status(404).json({
+                isSuccess: false,
+                message: "Post is not found!"
+            })
+
+            return
+        }
+
+        const updatePost = await prisma.post.update({
+            where: {
+                id: post.id
+            },
+            data: {
+                title,
+                content,
+            }
+        })
+
+        res.status(200).json({
+            isSuccess: true,
+            post: updatePost
+        })
+    } catch (error) {
+        console.log("Error: " + error)
+        res.status(500).json({
+            isSuccess: false,
+            message: "Server error!"
+        })
+    }
+
+    return
+}
+

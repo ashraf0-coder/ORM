@@ -15,6 +15,7 @@ model users {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt()
   post         post[]
+  comment      Comment[]
 
   @@unique([username, password])
 }
@@ -23,10 +24,20 @@ model post {
   id         String   @id @default(uuid())
   title      String
   content    String
+  user_id    Int
+  user users @relation(fields: [user_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  user_id    Int
+  comment Comment[]
+}
 
-  //relationship
-  user users @relation(fields: [user_id], references: [id])
+model Comment {
+  id         String   @id @default(uuid())
+  content    String
+  user_id    Int
+  post_id    String
+  user       users     @relation(fields: [user_id], references: [id])
+  post       post    @relation(fields: [post_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
